@@ -45,6 +45,7 @@ exports.index = async (event, client) => {
         };
 
         message = await messageFunc.index(eventpostback, client);
+        break;
         /*
         message = {
           type: 'text',
