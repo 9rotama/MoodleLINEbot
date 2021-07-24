@@ -11,8 +11,13 @@ exports.index = async (event, client) => {
   const data = (await axios.get(`${dbAPI}/search?userId=${userId}`)).data[0];
 
   let message;
-  // ポストバックデータをpostbackDataに格納
-  const postbackData = event.postback.data;
+  let postbackData;
+  // ポストバックデータのmodeの値をpostbackDataに格納
+  if (event.postback.data.mode) {
+    postbackData = event.postback.data.mode;
+  } else {
+    postbackData = event.postback.data;
+  }
   // もしevent.postback.paramsが存在する場合 リッチメニュー切り替えor日時選択のとき
   if (event.postback.params) {
     // 返信するメッセージを作成
