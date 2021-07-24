@@ -38,7 +38,7 @@ exports.index = async (event, client) => {
             userId: event.source.userId,
           },
           message: {
-            id: event.message.id,
+            // id: event.message.id,
             type: 'text',
             text: 'Flex Message',
           },
