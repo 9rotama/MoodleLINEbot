@@ -1,9 +1,10 @@
 const axios = require('axios');
+const messageFunc = require('./message');
 
 const dbAPI = 'https://sheetdb.io/api/v1/3r8wfrod9urni';
 
 // ポストバックイベントが飛んできた時
-exports.index = async (event) => {
+exports.index = async (event, client) => {
   // ユーザーIDを取得
   const { userId } = event.source;
   // DBからユーザーのデータを取得
@@ -27,11 +28,13 @@ exports.index = async (event) => {
       if (data) {
         // 返信するメッセージを作成.タスクの一覧を表示
         // ここだよここなんだよ
-
+        message = await messageFunc.index(event, client);
+        /*
         message = {
           type: 'text',
           text: `以下のタスクがあります\n\ntask : ${data.task}`,
         };
+        */
       } else {
         // 返信するメッセージを作成
         message = {

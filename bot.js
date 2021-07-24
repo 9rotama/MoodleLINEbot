@@ -45,7 +45,7 @@ exports.index = (req, res) => {
         case 'postback': {
           // ポストバックイベントが飛んできた時はpostback.jsのindexを呼び出す＊＊＊＊＊＊
           // 処理結果をmessageに格納
-          message = await postbackFunc.index(event);
+          message = await postbackFunc.index(event, client);
           break;
         }
         case 'join': {
