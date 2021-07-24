@@ -28,7 +28,23 @@ exports.index = async (event, client) => {
       if (data) {
         // 返信するメッセージを作成.タスクの一覧を表示
         // ここだよここなんだよ
-        message = await messageFunc.index(event, client);
+        const eventpostback = {
+          replyToken: event.replyToken,
+          type: 'message',
+          mode: event.mode,
+          timestamp: event.timestamp,
+          source: {
+            type: event.source.type,
+            userId: event.source.userId,
+          },
+          message: {
+            id: event.message.id,
+            type: 'text',
+            text: 'Flex Message',
+          },
+        };
+
+        message = await messageFunc.index(eventpostback, client);
         /*
         message = {
           type: 'text',
