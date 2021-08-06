@@ -29,3 +29,51 @@ database には　userid, url,  contextカラムがある
 
 
 axios.[put/ post（追加）] [get(取得)]()　　apiをたたく
+
+登録したURLを参照し取ってきたicalデータを整理してスプレッドシートに保存する
+
+const ConvertObj = (title,year,month,day,hour,minute) => {
+    let time = new Date()
+    time.setFullYear(year)
+    time.setMonth(month)
+    time.setDate(day)
+    time.setHours(hour)
+    time.setMinutes(minute)
+    time.setHours(time.getHours()+9)
+
+    let todo = {
+        TITLE:title,
+        YEAR:time.getFullYear(),
+        MONTH:time.getMonth(),
+        DAY:time.getDate(),
+        HOUR:time.getHours(),
+        MINUTE:time.getMinutes()
+    }
+    return todo;
+}
+
+axios.get(`${dbAPI}/search?userId=${userId}`)
+    .then(r => r.data)
+    .then(userData => userData[0].url)
+    .then(url => {
+        axios.get(url)
+            .then(r => r.data)
+            .then(icalData => {
+                const parsedData = ical2json.convert(icalData)
+                const vevent = parsedData.VCALENDAR[0].VEVENT
+                const tasks = vevent.filter(item => item.SUMMARY.match(/closes|is due|の提出期限が近づいています/))
+                const tasksname = []
+                for(let i = 0 ; i < tasks.length ; i++){
+                    let todo = {}
+                    todo = ConvertObj(tasks[i].SUMMARY,
+                                Number(tasks[i].DTEND.substr(0,4)),
+                                Number(tasks[i].DTEND.substr(4,2)),
+                                Number(tasks[i].DTEND.substr(6,2)),
+                                Number(tasks[i].DTEND.substr(9,2)),
+                                Number(tasks[i].DTEND.substr(11,2)))
+
+                    tasksname.push(todo)
+                }
+                axios.put(`${dbAPI}/userId/${userId}`,{data: [{tasks: tasksname}]})
+            })
+    })
