@@ -30,7 +30,7 @@ database には　userid, url,  contextカラムがある
 
 axios.[put/ post（追加）] [get(取得)]()　　apiをたたく
 
-登録したURLを参照し取ってきたicalデータを整理してスプレッドシートに保存する
+1.登録したURLを参照し取ってきたicalデータを整理してスプレッドシートに保存する
 
 const ConvertObj = (title,year,month,day,hour,minute) => {      //icalデータの時間表記を整理する関数
     let time = new Date()
@@ -78,7 +78,7 @@ axios.get(`${dbAPI}/search?userId=${userId}`)       //sheetDBAPIにリクエス�
             })
     })
 
-スプレッドシートに保存されたタスクから、今日のタスクを取得する
+2.スプレッドシートに保存されたタスクから、今日のタスクを取得する
 
 const todayDate = new Date()        //今日の日付を取得
 todayDate.setHours(todayDate.getHours())
@@ -101,4 +101,25 @@ axios.get(`${dbAPI}/search?userId=${userId}`)
     .then(tasksJson => JSON.parse(tasksJson))
     .then(todayTasks => {
         console.log(todayTasks)     //todayTasksが今日のタスクになります
+    })
+
+3.削除ボタンをおすとスプレッドシートからそのタスクが削除され、削除された後のタスクが返ってきます
+
+const taskTitle = ""        //ここには削除したいタスク名が入ります
+
+axios.get(`${dbAPI}/search?userId=${userId}`)
+    .then(r => r.data)
+    .then(userData => userData[0].todaytasks)
+    .then(tasksJson => JSON.parse(tasksJson))
+    .then(todayTasks => {
+        const newTodayTasks = todayTasks.filter(value => value.TITLE !== taskTitle)     //ここで削除しています
+        axios.put(`${dbAPI}/userId/${userId}`,{data: [{todaytasks: newTodayTasks}]})
+    })
+
+axios.get(`${dbAPI}/search?userId=${userId}`)
+    .then(r => r.data)
+    .then(userData => userData[0].todaytasks)
+    .then(tasksJson => JSON.parse(tasksJson))
+    .then(todayTasks => {
+        console.log(todayTasks)     //これで削除した後のタスクが取れます。2のスクリプトの最後と同じです
     })
