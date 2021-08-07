@@ -32,7 +32,7 @@ axios.[put/ post（追加）] [get(取得)]()　　apiをたたく
 
 登録したURLを参照し取ってきたicalデータを整理してスプレッドシートに保存する
 
-const ConvertObj = (title,year,month,day,hour,minute) => {
+const ConvertObj = (title,year,month,day,hour,minute) => {      //icalデータの時間表記を整理する関数
     let time = new Date()
     time.setFullYear(year)
     time.setMonth(month)
@@ -52,16 +52,16 @@ const ConvertObj = (title,year,month,day,hour,minute) => {
     return todo;
 }
 
-axios.get(`${dbAPI}/search?userId=${userId}`)
+axios.get(`${dbAPI}/search?userId=${userId}`)       //sheetDBAPIにリクエストを送る
     .then(r => r.data)
-    .then(userData => userData[0].url)
+    .then(userData => userData[0].url)      //icalのURLを取得
     .then(url => {
-        axios.get(url)
+        axios.get(url)      //icalにリクエストを送る
             .then(r => r.data)
             .then(icalData => {
-                const parsedData = ical2json.convert(icalData)
+                const parsedData = ical2json.convert(icalData)      //icalからjsonに変換
                 const vevent = parsedData.VCALENDAR[0].VEVENT
-                const tasks = vevent.filter(item => item.SUMMARY.match(/closes|is due|の提出期限が近づいています/))
+                const tasks = vevent.filter(item => item.SUMMARY.match(/closes|is due|の提出期限が近づいています/))     //必要なタスクを取得
                 const tasksname = []
                 for(let i = 0 ; i < tasks.length ; i++){
                     let todo = {}
@@ -74,6 +74,6 @@ axios.get(`${dbAPI}/search?userId=${userId}`)
 
                     tasksname.push(todo)
                 }
-                axios.put(`${dbAPI}/userId/${userId}`,{data: [{tasks: tasksname}]})
+                axios.put(`${dbAPI}/userId/${userId}`,{data: [{tasks: tasksname}]})     //整理したデータを保存
             })
     })
