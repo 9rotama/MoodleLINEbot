@@ -384,7 +384,22 @@ const textEvent = async (event, client) => {
     }
     // 'Flex Message'というメッセージが送られてきた時 タスクの表示を行う
     case 'Flex Message': {
+      // 日時を取得
+      const hiduke = new Date();
+      const month = hiduke.getMonth() + 1;
+      const day = hiduke.getDate();
       // 返信するメッセージを作成
+      const todayTasks = [
+        {
+          TITLE: 'Unit 10 vocabulary activity closes',
+          YEAR: 2021,
+          MONTH: 8,
+          DAY: 8,
+          HOUR: 18,
+          MINUTE: 53,
+        },
+      ];
+
       message = {
         type: 'flex',
         altText: 'Flex Message',
@@ -403,7 +418,7 @@ const textEvent = async (event, client) => {
               },
               {
                 type: 'text',
-                text: '今日(7月11日)の予定',
+                text: `今日(${month}月${day}日)の予定`,
                 weight: 'bold',
                 size: 'md',
                 margin: 'md',
@@ -425,7 +440,7 @@ const textEvent = async (event, client) => {
                     contents: [
                       {
                         type: 'text',
-                        text: 'Homework 8 ',
+                        text: `${todayTasks[0].TITLE}`,
                         size: 'sm',
                         color: '#555555',
                         flex: 3,
@@ -437,7 +452,7 @@ const textEvent = async (event, client) => {
                         action: {
                           type: 'postback',
                           label: '完了',
-                          data: 'hello',
+                          data: `delete/${todayTasks[0].TITLE}`,
                         },
                         flex: 2,
                         margin: 'none',
@@ -469,7 +484,7 @@ const textEvent = async (event, client) => {
                         action: {
                           type: 'postback',
                           label: '完了',
-                          data: 'hello',
+                          data: 'delete/cabulary Quiz 8',
                         },
                         flex: 2,
                         margin: 'none',
@@ -502,7 +517,7 @@ const textEvent = async (event, client) => {
                         action: {
                           type: 'postback',
                           label: '完了',
-                          data: 'hello',
+                          data: 'delete/Exercise 5 ',
                         },
                         flex: 2,
                         margin: 'none',

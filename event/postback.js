@@ -1,7 +1,14 @@
 const axios = require('axios');
 const messageFunc = require('./message');
 
+// チームのやつ
+// const dbAPI = 'https://sheetdb.io/api/v1/1zz766ujclw94';
+
+// 自分のやつ
 const dbAPI = 'https://sheetdb.io/api/v1/3r8wfrod9urni';
+
+// userIdはLINEのやつ
+// const userId = 'U5306b76f1752cf8e8a189542fa91ff2c';
 
 // ポストバックイベントが飛んできた時
 exports.index = async (event, client) => {
@@ -23,6 +30,12 @@ exports.index = async (event, client) => {
       text: `日時データを受け取りました！\ndata: ${postbackData}\ndatetime: ${event.postback.params.datetime}`,
     };
   }
+
+  // もしdelete文字列が含まれていたら、todoリストの完了アクション
+  if (postbackData.match(/delete/)) {
+    // DBから削除する機能
+  }
+
   // タスクの表示を行う
   switch (postbackData) {
     // ユーザーのデータがDBに存在する時
