@@ -423,7 +423,7 @@ const textEvent = async (event, client) => {
                 size: 'md',
                 margin: 'md',
                 align: 'center',
-              },// ここから動的生成をしたい
+              }, // ここから動的生成をしたい
               {
                 type: 'separator',
                 margin: 'xxl',
@@ -460,7 +460,7 @@ const textEvent = async (event, client) => {
                         style: 'primary',
                       },
                     ],
-                  },// ここまで
+                  }, // ここまで
                   {
                     type: 'separator',
                     margin: 'xxl',
