@@ -15,6 +15,10 @@
     {
       "source": "/liff",
       "destination": "liff/index.html"
+    },
+    {
+      "source": "/trigger",
+      "destination": "api/server.js"
     }
   ]
 }

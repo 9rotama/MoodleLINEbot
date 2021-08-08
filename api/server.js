@@ -15,3 +15,12 @@ app.post('/webhook', line.middleware(config), bot.index);
 
 app.listen(PORT);
 console.log(`Server running at ${PORT}`);
+
+//定期通知の処理が書いてあるtriggerファイル読み込み
+const trigger = require('../trigger');
+
+//app scriptのコードが実行されたら
+app.post('/trigger', (req, res) => {
+  trigger.triggerFunc(); //定期通知の処理
+  res.end();
+})

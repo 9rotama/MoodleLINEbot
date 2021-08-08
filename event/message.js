@@ -1,5 +1,28 @@
 const axios = require('axios');
-const dbAPI = 'https://sheetdb.io/api/v1/v35tdpllqplhg';
+const ical2json = require('ical2json');
+const dbAPI = 'https://sheetdb.io/api/v1/16jp6eklpl1tt';
+
+//icalデータの時間表記を整理する関数
+const ConvertObj = (title, year, month, day, hour, minute) => {
+  
+  let time = new Date();
+  time.setFullYear(year);
+  time.setMonth(month);
+  time.setDate(day);
+  time.setHours(hour);
+  time.setMinutes(minute);
+  time.setHours(time.getHours() + 9);
+
+  let todo = {
+    TITLE: title,
+    YEAR: time.getFullYear(),
+    MONTH: time.getMonth(),
+    DAY: time.getDate(),
+    HOUR: time.getHours(),
+    MINUTE: time.getMinutes(),
+  };
+  return todo;
+};
 
 // テキストメッセージの処理をする関数
 const textEvent = async (event, client) => {
@@ -14,6 +37,41 @@ const textEvent = async (event, client) => {
     if (data.context === 'registerMode') {
       // DBへメッセージのデータを追加してcontextを空にする
       await axios.put(`${dbAPI}/userId/${userId}`, { data: [{ url: event.message.text, context: '' }] });
+      
+      //icalをjsonに変換し、DBに保存
+      await axios
+        .get(`${dbAPI}/search?userId=${userId}`) //sheetDBAPIにリクエストを送る
+        .then((r) => r.data)
+        .then((userData) => userData[0].url) //icalのURLを取得
+        .then((url) => {
+          axios
+            .get(url) //icalにリクエストを送る
+            .then((r) => r.data)
+            .then((icalData) => {
+              const parsedData = ical2json.convert(icalData); //icalからjsonに変換
+              const vevent = parsedData.VCALENDAR[0].VEVENT;
+              const tasks = vevent.filter((item) =>
+                item.SUMMARY.match(/closes|is due|の提出期限が近づいています/)
+              ); //必要なタスクを取得
+              const tasksname = [];
+              for (let i = 0; i < tasks.length; i++) {
+                let todo = {};
+                todo = ConvertObj(
+                  tasks[i].SUMMARY,
+                  Number(tasks[i].DTEND.substr(0, 4)),
+                  Number(tasks[i].DTEND.substr(4, 2)),
+                  Number(tasks[i].DTEND.substr(6, 2)),
+                  Number(tasks[i].DTEND.substr(9, 2)),
+                  Number(tasks[i].DTEND.substr(11, 2))
+                );
+                tasksname.push(todo);
+              }
+              axios.put(`${dbAPI}/userId/${userId}`, {
+                data: [{ tasks: JSON.stringify(tasksname)}],
+              }); //整理したデータを保存
+            });
+        });
+      
       // index関数に返信するメッセージを返す
       return {
         type: 'text',
