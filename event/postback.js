@@ -195,14 +195,14 @@ exports.index = async (event, client) => {
         const thisMonth = todayDate.getMonth() + 1;
         const today = todayDate.getDate();
 
-        // スプレッドシートから今日のタスクを取得、todaystasksに保存
+        // スプレッドシートから今日のタスクを取得、todaystasksに保存  消してみる
         axios.get(`${dbAPI}/search?userId=${userId}`)
           .then((r) => r.data)
           .then((userData) => userData[0].tasks) // スプレッドシートからタスクを取得
           .then((tasksJson) => JSON.parse(tasksJson))
           .then((tasks) => {
             // eslint-disable-next-line max-len
-            const todayTasks = tasks.filter((value) => value.YEAR === thisYear && value.MONTH === thisMonth && value.DAY === today); // 今月のタスクを取得
+            const todayTasks = tasks.filter((value) => value.YEAR === thisYear && value.MONTH === thisMonth /* && value.DAY === today */); // 今月のタスクを取得
             axios.put(`${dbAPI}/userId/${userId}`, { data: [{ todaytasks: todayTasks }] }); // 今日のタスクを別のカラムに保存
           });
 
