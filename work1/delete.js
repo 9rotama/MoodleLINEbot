@@ -147,4 +147,9 @@ async function main() {
   console.log(message);
 }
 
-main();
+// delete以下の文字列を抽出する関数
+function substruct() {
+  const str = 'delete/homework 8';
+  const result = str.substr(7);
+  return result;
+}
