@@ -1,14 +1,11 @@
 const axios = require('axios');
-const messageFunc = require('./message');
+// const messageFunc = require('./message');
 
 // チームのやつ
 // const dbAPI = 'https://sheetdb.io/api/v1/1zz766ujclw94';
 
 // 自分のやつ
 const dbAPI = 'https://sheetdb.io/api/v1/3r8wfrod9urni';
-
-// userIdはLINEのやつ
-// const userId = 'U5306b76f1752cf8e8a189542fa91ff2c';
 
 // ポストバックイベントが飛んできた時
 exports.index = async (event, client) => {
@@ -58,10 +55,12 @@ exports.index = async (event, client) => {
             axios.put(`${dbAPI}/userId/${userId}`, { data: [{ todaytasks: todayTasks }] }); // 今日のタスクを別のカラムに保存
           });
 
-        const tasksJson = await (axios.get(`${dbAPI}/search?userId=${userId}`)).data[0].todaytasks;
-        const todayTasks = JSON.parse(tasksJson);
-
-        // メッセージオブジェクトの動的生成
+        // const tasksJson = await axios.get(`${dbAPI}/search?userId=${userId}`).data[].todaytasks;
+        // todaytasksからjsonをとってくる
+        // DBからユーザーのデータを取得
+        const data = (await axios.get(`${dbAPI}/search?userId=${userId}`)).data[0];
+        const todayTasks = JSON.parse(data.todaytasks);
+        // console.log(todayTasks);
         // 日時を動的に取得
         const hiduke = new Date();
         const month = hiduke.getMonth() + 1;
@@ -160,33 +159,9 @@ exports.index = async (event, client) => {
           // task_boxとして一括追加
           flex_contents.push(task_box);
           message.contents.body.contents = flex_contents;
+          // console.log(message.contents.body.contents);
         });
-
-        // 返信するメッセージを作成.タスクの一覧を表示 message.jsに飛ばす
-        /*
-        const eventpostback = {
-          replyToken: event.replyToken,
-          type: 'message',
-          mode: event.mode,
-          timestamp: event.timestamp,
-          source: {
-            type: event.source.type,
-            userId: event.source.userId,
-          },
-          message: {
-            // id: event.message.id,
-            type: 'text',
-            text: 'Flex Message',
-          },
-        };
-        message = await messageFunc.index(eventpostback, client);
-        break;
-        /*
-        message = {
-          type: 'text',
-          text: `以下のタスクがあります\n\ntask : ${data.task}`,
-        };
-        */
+        console.log(message.contents.body.contents);
       } else {
         // 返信するメッセージを作成
         message = {
@@ -195,6 +170,7 @@ exports.index = async (event, client) => {
 
         };
       }
+      console.log('break手前です');
       break;
     }
     // 存在しない場合
@@ -209,5 +185,7 @@ exports.index = async (event, client) => {
   }
 
   // 関数の呼び出し元（bot.jsのindex）に返信するメッセージを返す
+  // console.log('return message 手前です');
+  console.log(message.contents.body.contents);
   return message;
 };
