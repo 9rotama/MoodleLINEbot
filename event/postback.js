@@ -2,10 +2,10 @@ const axios = require('axios');
 // const messageFunc = require('./message');
 
 // チームのやつ
-// const dbAPI = 'https://sheetdb.io/api/v1/1zz766ujclw94';
+const dbAPI = 'https://sheetdb.io/api/v1/1zz766ujclw94';
 
 // 自分のやつ
-const dbAPI = 'https://sheetdb.io/api/v1/3r8wfrod9urni';
+// const dbAPI = 'https://sheetdb.io/api/v1/3r8wfrod9urni';
 
 // ポストバックイベントが飛んできた時
 exports.index = async (event, client) => {
@@ -15,23 +15,21 @@ exports.index = async (event, client) => {
   const data = (await axios.get(`${dbAPI}/search?userId=${userId}`)).data[0];
 
   // delete以下の文字列を抽出する関数
-  function substruct() {
-    const str = 'delete/homework 8';
+  function substruct(str) {
     const result = str.substr(7);
     return result;
   }
 
   // tasksカラムからjsonを取得する関数
   async function axiosTasks() {
-    const taskJson = (await axios.get(`${dbAPI}/search?userId=${userId}`).catch((e) => console.log(e))).data[0];
+    const taskJson = data; // 修正
     const Tasks = JSON.parse(taskJson.tasks);
     return Tasks;
   }
   // todaytasksカラムから配を取得する関数
   async function axiosTodayTasks() {
-    const taskJson = (await axios.get(`${dbAPI}/search?userId=${userId}`).catch((e) => console.log(e)));
-    const taskData = taskJson.data[0];
-    const todayTasks = JSON.parse(taskData.todaytasks);
+    const taskJson = data; // 修正
+    const todayTasks = JSON.parse(taskJson.todaytasks);
     return todayTasks;
   }
   // todaytasksカラムから特定の値を削除する関数 削除済みオブジェクトを返す。
@@ -179,9 +177,11 @@ exports.index = async (event, client) => {
   if (postbackData.match(/delete/)) {
     // postbackからtasktitleを抽出する
     const taskTitle = substruct(postbackData);
+    console.log(`タスクタイトル：${taskTitle}`);
     // json取得・タスク削除・DBに戻す・メッセージ生成
-    const deletedMessage = deleteMain(taskTitle);
-    return deletedMessage;
+    message = deleteMain(taskTitle);
+    console.log(`Message: \n${message}`);
+    return message;
   }
 
   // タスクの表示を行う
@@ -202,7 +202,7 @@ exports.index = async (event, client) => {
           .then((tasksJson) => JSON.parse(tasksJson))
           .then((tasks) => {
             // eslint-disable-next-line max-len
-            const todayTasks = tasks.filter((value) => value.YEAR === thisYear && value.MONTH === thisMonth /* && value.DAY === today */); // 今月のタスクを取得
+            const todayTasks = tasks.filter((value) => value.YEAR === thisYear && value.MONTH === thisMonth && value.DAY === today); // 今月のタスクを取得
             axios.put(`${dbAPI}/userId/${userId}`, { data: [{ todaytasks: todayTasks }] }); // 今日のタスクを別のカラムに保存
           });
 

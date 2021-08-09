@@ -1,6 +1,8 @@
 const axios = require('axios');
 
-const dbAPI = 'https://sheetdb.io/api/v1/3r8wfrod9urni';
+// const dbAPI = 'https://sheetdb.io/api/v1/3r8wfrod9urni';
+// チームのやつ
+const dbAPI = 'https://sheetdb.io/api/v1/1zz766ujclw94';
 
 // テキストメッセージの処理をする関数
 const textEvent = async (event, client) => {
