@@ -14,9 +14,9 @@ app.get('/', (req, res) => { res.send('Deploy succeeded'); });
 // /webhookにアクセスがあったとき、bot.jsのindexを呼び出す
 app.post('/webhook', line.middleware(config), bot.index);
 app.post('/trigger', (req, res) => {
-    trigger();
-    res.end();
-})
+  trigger();
+  res.end();
+});
 
 app.listen(PORT);
 console.log(`Server running at ${PORT}`);
