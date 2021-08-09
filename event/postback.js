@@ -30,7 +30,9 @@ exports.index = async (event, client) => {
 
   // もしdelete文字列が含まれていたら、todoリストの完了アクション
   if (postbackData.match(/delete/)) {
-    // DBから削除する機能
+  // DBから削除する機能
+
+
   }
 
   // タスクの表示を行う
@@ -56,14 +58,15 @@ exports.index = async (event, client) => {
           });
 
         // const tasksJson = await axios.get(`${dbAPI}/search?userId=${userId}`).data[].todaytasks;
+
         // todaytasksからjsonをとってくる
         // DBからユーザーのデータを取得
-        const taskResponse = (await axios.get(`${dbAPI}/search?userId=${userId}`).catch(e => console.log(e)));
+        const taskResponse = (await axios.get(`${dbAPI}/search?userId=${userId}`).catch((e) => console.log(e)));
         const taskdata = taskResponse.data[0];
-        console.log(taskdata);
-        console.log(taskResponse.status);
+        // console.log(taskdata);
+        // console.log(taskResponse.status);
         const todayTasks = JSON.parse(taskdata.todaytasks);
-        // console.log(todayTasks);
+
         // 日時を動的に取得
         const hiduke = new Date();
         const month = hiduke.getMonth() + 1;
@@ -103,9 +106,6 @@ exports.index = async (event, client) => {
           },
         };
 
-        // タスクの個数を調べる
-        // console.log(todayTasks.length);
-
         // messageの必要な中身だけ定数にする(テンプレ) ***/*
         const flex_contents = message.contents.body.contents;
 
@@ -115,56 +115,54 @@ exports.index = async (event, client) => {
           margin: 'xxl',
         };
 
-        // タスクボックスの宣言(format) ***
-        const task_box = {
-          type: 'box',
-          layout: 'vertical',
-          margin: 'xxl',
-          spacing: 'sm',
-          contents: [
-            {
-              type: 'box',
-              layout: 'horizontal',
-              contents: [
-                {
-                  type: 'text',
-                  text: 'hogehoge', // hogehoge
-                  size: 'sm',
-                  color: '#555555',
-                  flex: 3,
-                  align: 'center',
-                  gravity: 'center',
-                },
-                {
-                  type: 'button',
-                  action: {
-                    type: 'postback',
-                    label: '完了',
-                    data: 'hogehoge', // hogehoge
-                  },
-                  flex: 2,
-                  margin: 'none',
-                  gravity: 'center',
-                  style: 'primary',
-                },
-              ],
-            },
-          ],
-        };// ここまで
-
         // 動的に配列を生成
         todayTasks.forEach((value) => {
+          // タスクボックスの宣言(format) ***
+          const task_box = {
+            type: 'box',
+            layout: 'vertical',
+            margin: 'xxl',
+            spacing: 'sm',
+            contents: [
+              {
+                type: 'box',
+                layout: 'horizontal',
+                contents: [
+                  {
+                    type: 'text',
+                    text: 'hogehoge', // hogehoge
+                    size: 'sm',
+                    color: '#555555',
+                    flex: 3,
+                    align: 'center',
+                    gravity: 'center',
+                  },
+                  {
+                    type: 'button',
+                    action: {
+                      type: 'postback',
+                      label: '完了',
+                      data: 'hogehoge', // hogehoge
+                    },
+                    flex: 2,
+                    margin: 'none',
+                    gravity: 'center',
+                    style: 'primary',
+                  },
+                ],
+              },
+            ],
+          };
           // セパレータの追加
           flex_contents.push(separator);
+          // console.log(value.TITLE);
           // task_boxの中身の追加
           task_box.contents[0].contents[0].text = value.TITLE;
           task_box.contents[0].contents[1].action.data = `delete/${value.TITLE}`;
+
           // task_boxとして一括追加
-          flex_contents.push(task_box);
-          message.contents.body.contents = flex_contents;
-          // console.log(message.contents.body.contents);
+          message.contents.body.contents.push(task_box);
         });
-        console.log(message.contents.body.contents);
       } else {
         // 返信するメッセージを作成
         message = {
@@ -173,7 +171,7 @@ exports.index = async (event, client) => {
 
         };
       }
-      console.log('break手前です');
+      // console.log('break手前です');
       break;
     }
     // 存在しない場合
@@ -189,6 +187,6 @@ exports.index = async (event, client) => {
 
   // 関数の呼び出し元（bot.jsのindex）に返信するメッセージを返す
   // console.log('return message 手前です');
-  console.log(message);
+  // console.log(message);
   return message;
 };
