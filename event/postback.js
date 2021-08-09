@@ -21,11 +21,11 @@ exports.index = async (event, client) => {
   }
 
   // tasksカラムからjsonを取得する関数
-  //async function axiosTasks() {
-    //const taskJson = data; // 修正
-    //const Tasks = JSON.parse(taskJson.tasks);
-    //return Tasks;
-  //}
+  // async function axiosTasks() {
+  // const taskJson = data; // 修正
+  // const Tasks = JSON.parse(taskJson.tasks);
+  // return Tasks;
+  // }
   // todaytasksカラムから配を取得する関数
   async function axiosTodayTasks() {
     const taskJson = data; // 修正
@@ -40,14 +40,15 @@ exports.index = async (event, client) => {
   }
 
   // tasksカラムから特定の値を削除する関数
-  //function filterTasks(Tasks, taskTitle) {
-    //const newTasks = Tasks.filter((value) => value.TITLE !== taskTitle);
-   // axios.put(`${dbAPI}/userId/${userId}`, { data: [{ tasks: newTasks }] });
-  //}
-  // メッセージオブジェクトを生成する関数
+  // function filterTasks(Tasks, taskTitle) {
+  // const newTasks = Tasks.filter((value) => value.TITLE !== taskTitle);
+  // axios.put(`${dbAPI}/userId/${userId}`, { data: [{ tasks: newTasks }] });
+  // }
+  // 削除時のメッセージオブジェクトを生成する関数
   function createMeassage(newTodayTasks) {
   // 日時を動的に取得
     const hiduke = new Date();
+    hiduke.setHours(hiduke.getHours() + 9);
     const month = hiduke.getMonth() + 1;
     const day = hiduke.getDate();
     // console.log(todayTasks[0].TITLE);
@@ -147,14 +148,14 @@ exports.index = async (event, client) => {
   // delete処理用のメイン関数 ＊＊＊＊
   async function deleteMain(tasktitle) {
   // tasksカラムからjsonを取得する関数
-    //const Tasks = (await axiosTasks());
+    // const Tasks = (await axiosTasks());
     // console.log(Tasks);
     const todaytasks = (await axiosTodayTasks());
     // console.log(todaytasks);
     const newTodayTasks = filterTodayTasks(todaytasks, tasktitle);
     // let deleted_todaytasks = (await axiosTodayTasks());
     // console.log(newTodayTasks);
-    //filterTasks(Tasks, tasktitle);
+    // filterTasks(Tasks, tasktitle);
     const message = createMeassage(newTodayTasks);
     return message;
   }
@@ -177,10 +178,10 @@ exports.index = async (event, client) => {
   if (postbackData.match(/delete/)) {
     // postbackからtasktitleを抽出する
     const taskTitle = substruct(postbackData);
-    //console.log(`タスクタイトル：${taskTitle}`);
+    // console.log(`タスクタイトル：${taskTitle}`);
     // json取得・タスク削除・DBに戻す・メッセージ生成
     message = deleteMain(taskTitle);
-    //console.log(`Message: \n${message}`);
+    // console.log(`Message: \n${message}`);
     return message;
   }
 
@@ -189,7 +190,7 @@ exports.index = async (event, client) => {
     // ユーザーのデータがDBに存在する時
     case 'タスク表示': {
       if (data) {
-        /*const todayDate = new Date(); // 今日の日付を取得
+        /* const todayDate = new Date(); // 今日の日付を取得
         todayDate.setHours(todayDate.getHours());
         const thisYear = todayDate.getFullYear();
         const thisMonth = todayDate.getMonth() + 1;
@@ -204,7 +205,7 @@ exports.index = async (event, client) => {
             // eslint-disable-next-line max-len
             const todayTasks = tasks.filter((value) => value.YEAR === thisYear && value.MONTH === thisMonth  && value.DAY === today ); // 今月のタスクを取得
             axios.put(`${dbAPI}/userId/${userId}`, { data: [{ todaytasks: todayTasks }] }); // 今日のタスクを別のカラムに保存
-          });*/
+          }); */
 
         // const tasksJson = await axios.get(`${dbAPI}/search?userId=${userId}`).data[].todaytasks;
 
@@ -218,8 +219,11 @@ exports.index = async (event, client) => {
 
         // 日時を動的に取得
         const hiduke = new Date();
+        hiduke.setHours(hiduke.getHours() + 9);
         const month = hiduke.getMonth() + 1;
         const day = hiduke.getDate();
+        console.log(month, day);
+
         // console.log(todayTasks[0].TITLE);
 
         // messageオブジェクトの宣言(テンプレ) ***
