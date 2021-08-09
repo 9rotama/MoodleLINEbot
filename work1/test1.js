@@ -3,7 +3,6 @@
 const axios = require('axios');
 const ical2json = require('ical2json');
 
-
 // テンプレにフォーマットを流し込む
 // とりあえず仮のtodoリストを宣言
 const todayTasks = [
@@ -111,13 +110,13 @@ todayTasks.forEach((value) => {
   flex_contents.push(separator);
   // task_boxの中身の追加
   task_box.contents[0].contents[0].text = value.TITLE;
-  task_box.contents[0].contents[1].data = `delete/${value.TITLE}`;
+  task_box.contents[0].contents[1].action.data = `delete/${value.TITLE}`;
   // task_boxとして一括追加
   flex_contents.push(task_box);
   message.contents.body.contents = flex_contents;
 });
 
 // 中身が入ってるか確認
-console.log(message.contents.body.contents[3].contents[0]);
+console.log(message.contents.body.contents[3].contents[0].contents);
 
 // console.log(task_box.contents[0].contents);

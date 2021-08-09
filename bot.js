@@ -97,7 +97,10 @@ exports.index = (req, res) => {
         client.replyMessage(event.replyToken, message)
           .then((response) => {
             res.json(response);
-          }).catch((err) => console.log(`${JSON.stringify(message)}\n\n\n${err}`));
+          }).catch((err) => {
+            console.log('reply failed リクエストダメダメダメ\n');
+            console.log(`${JSON.stringify(message)}\n\n\n${err}`);
+          });
       }
     });
     // 署名検証に失敗した場合

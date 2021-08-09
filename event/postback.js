@@ -58,8 +58,11 @@ exports.index = async (event, client) => {
         // const tasksJson = await axios.get(`${dbAPI}/search?userId=${userId}`).data[].todaytasks;
         // todaytasksからjsonをとってくる
         // DBからユーザーのデータを取得
-        const data = (await axios.get(`${dbAPI}/search?userId=${userId}`)).data[0];
-        const todayTasks = JSON.parse(data.todaytasks);
+        const taskResponse = (await axios.get(`${dbAPI}/search?userId=${userId}`).catch(e => console.log(e)));
+        const taskdata = taskResponse.data[0];
+        console.log(taskdata);
+        console.log(taskResponse.status);
+        const todayTasks = JSON.parse(taskdata.todaytasks);
         // console.log(todayTasks);
         // 日時を動的に取得
         const hiduke = new Date();
@@ -68,7 +71,7 @@ exports.index = async (event, client) => {
         // console.log(todayTasks[0].TITLE);
 
         // messageオブジェクトの宣言(テンプレ) ***
-        const message = {
+        message = {
           type: 'flex',
           altText: 'Flex Message',
           contents: {
@@ -155,7 +158,7 @@ exports.index = async (event, client) => {
           flex_contents.push(separator);
           // task_boxの中身の追加
           task_box.contents[0].contents[0].text = value.TITLE;
-          task_box.contents[0].contents[1].data = `delete/${value.TITLE}`;
+          task_box.contents[0].contents[1].action.data = `delete/${value.TITLE}`;
           // task_boxとして一括追加
           flex_contents.push(task_box);
           message.contents.body.contents = flex_contents;
@@ -186,6 +189,6 @@ exports.index = async (event, client) => {
 
   // 関数の呼び出し元（bot.jsのindex）に返信するメッセージを返す
   // console.log('return message 手前です');
-  console.log(message.contents.body.contents);
+  console.log(message);
   return message;
 };
