@@ -1,8 +1,5 @@
 // メッセージオブジェクトを動的に生成するスクリプトです。
 
-
-
-
 const axios = require('axios');
 const ical2json = require('ical2json');
 

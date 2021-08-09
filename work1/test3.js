@@ -139,57 +139,7 @@ axios.get(`${dbAPI}/search?userId=${userId}`)
   return message;
   });
 
-/*
-// todaytasksからjsonをとってくる .thenでやるとこうなる
-axios.get(`${dbAPI}/search?userId=${userId}`).then((r) => {
-  const tasksJson = r.data[0].todaytasks;
-  const todayTasks = JSON.parse(tasksJson);
-  // console.log(todayTasks);
-
-  // メッセージオブジェクトの動的生成
-  // 日時を動的に取得
-  const hiduke = new Date();
-  const month = hiduke.getMonth() + 1;
-  const day = hiduke.getDate();
-  // console.log(todayTasks[0].TITLE);
-
-  // messageオブジェクトの宣言(テンプレ) ***
-  const message = {
-    type: 'flex',
-    altText: 'Flex Message',
-    contents: {
-      type: 'bubble',
-      // 中身
-      body: {
-        type: 'box',
-        layout: 'vertical',
-        contents: [
-          // ヘッダー
-          {
-            type: 'text',
-            text: 'moodle',
-            weight: 'bold',
-            color: '#1DB446',
-            size: 'sm',
-          },
-          {
-            type: 'text',
-            text: `今日(${month}月${day}日)の予定`,
-            weight: 'bold',
-            size: 'md',
-            margin: 'md',
-            align: 'center',
-          },
-          // ここから動的生成をしたい タスクの中身
-        ],
-      },
-    },
-  };
-
-  // タスクの個数を調べる
-  // console.log(todayTasks.length);
-
-  // messageの必要な中身だけ定数にする(テンプレ) ***/*
+  // messageの必要な中身だけ定数にする(テンプレ) ***/
   const flex_contents = message.contents.body.contents;
 
   // セパレータの宣言(format) ***
