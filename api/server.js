@@ -4,8 +4,8 @@ const line = require('@line/bot-sdk');
 const bot = require('../bot');
 // configの読み込み
 const config = require('../config').index();
-const trigger = require('../trigger').triggerFunc();
-
+const trigger = require('../trigger').triggerFunc;
+console.log(trigger);
 const PORT = process.env.PORT || 3000;
 const app = express();
 
@@ -13,8 +13,8 @@ const app = express();
 app.get('/', (req, res) => { res.send('Deploy succeeded'); });
 // /webhookにアクセスがあったとき、bot.jsのindexを呼び出す
 app.post('/webhook', line.middleware(config), bot.index);
-app.post('/trigger', (req, res) => {
-    trigger();
+app.post('/trigger', async (req, res) => {
+    await trigger();
     res.end();
 })
 
