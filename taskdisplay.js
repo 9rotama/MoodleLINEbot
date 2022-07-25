@@ -8,7 +8,7 @@ exports.taskDisplay = (dbAPI, userId) => {
 
     // todaytasksからjsonをとってくる
     // DBからユーザーのデータを取得
-    const taskResponse = (await axios.get(`${dbAPI}/search?userId=${userId}`).catch(e => console.log(e)));
+    const taskResponse = (await get(`${dbAPI}/search?userId=${userId}`).catch(e => console.log(e)));
     const taskdata = taskResponse.data[0];
     const todayTasks = JSON.parse(taskdata.todaytasks);
 

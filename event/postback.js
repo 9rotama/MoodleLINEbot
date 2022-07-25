@@ -1,6 +1,6 @@
 const axios = require('axios');
 // const messageFunc = require('./message');
-const taskFormat = require('taskFormat').index;
+const taskFormat = require('../taskFormat').index;
 
 // チームのやつ
 const dbAPI = 'https://sheetdb.io/api/v1/1zz766ujclw94';
@@ -9,7 +9,7 @@ const dbAPI = 'https://sheetdb.io/api/v1/1zz766ujclw94';
 // const dbAPI = 'https://sheetdb.io/api/v1/3r8wfrod9urni';
 
 // ポストバックイベントが飛んできた時
-exports.index = async (event, client) => {
+exports.index = async (event) => {
   // ユーザーIDを取得
   const { userId } = event.source;
   // DBからユーザーのデータを取得
@@ -111,9 +111,12 @@ exports.index = async (event, client) => {
           .then((userData) => userData[0].tasks) // スプレッドシートからタスクを取得
           .then((tasksJson) => JSON.parse(tasksJson))
           .then((tasks) => {
-            // eslint-disable-next-line max-len
-            const todayTasks = tasks.filter((value) => value.YEAR === thisYear && value.MONTH === thisMonth  && value.DAY === today ); // 今月のタスクを取得
-            axios.put(`${dbAPI}/userId/${userId}`, { data: [{ todaytasks: todayTasks }] }); // 今日のタスクを別のカラムに保存
+            const todayTasks = tasks.filter(
+              (value)
+              => value.YEAR === thisYear && value.MONTH === thisMonth  && value.DAY === today );
+              // 今月のタスクを取得
+            axios.put(`${dbAPI}/userId/${userId}`, { data: [{ todaytasks: todayTasks }] });
+            // 今日のタスクを別のカラムに保存
           }); */
 
         // const tasksJson = await axios.get(`${dbAPI}/search?userId=${userId}`).data[].todaytasks;
@@ -134,7 +137,7 @@ exports.index = async (event, client) => {
         console.log(month, day);
 
         // console.log(todayTasks[0].TITLE);
-        message = taskFormat(todayTasks, month, day)
+        message = taskFormat(todayTasks, month, day);
       } else {
         // 返信するメッセージを作成
         message = {

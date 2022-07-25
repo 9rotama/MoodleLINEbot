@@ -2,10 +2,10 @@
   "name": "code",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "/api/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node /api/server.js"
   },
   "keywords": [],
   "author": "",
@@ -13,6 +13,7 @@
   "dependencies": {
     "@line/bot-sdk": "^7.3.0",
     "axios": "^0.21.1",
+    "dotenv": "^16.0.1",
     "express": "^4.17.1",
     "vercel": "^23.0.0"
   },
